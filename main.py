@@ -21,8 +21,11 @@ fin_url = '/index.html'
 if os.path.exists('./CSV') == False :
     os.mkdir('./CSV')
 
+if os.path.exists('./Images') == False :
+    os.mkdir('./Images')
+
 # Récupération des catégories
-requete_init = requests.get('http://books.toscrape.com/index.html')
+requete_init = requests.get('http://books.toscrape.com/catalogue/category/books/travel_2/index.html')
 soup = BeautifulSoup(requete_init.content, 'html.parser')
 liste_categories = soup.select('ul')[2]
 categories = liste_categories.find_all('li')
@@ -32,6 +35,10 @@ cpt=2
 for cat in categories:
     # initialisation du dictionnaire pour remplir le CSV
     all_info = []
+
+    img_dir = './Images/' + cat.text.strip().replace(' ', '_')
+    if os.path.exists(img_dir) == False :
+        os.mkdir(img_dir)
 
     categorie_script = cat.text.strip().lower().replace(' ', '-')
     lien = base_url + categorie_script + '_' + str(cpt) + fin_url
@@ -50,7 +57,6 @@ for cat in categories:
     for x in all_books:
         # Initialisation de l'adresse des livres
         lien_livre = 'http://books.toscrape.com/catalogue/' + x.h3.a.get('href').split(sep='/')[3] + '/' + x.h3.a.get('href').split(sep='/')[4]
-        #print(x.h3.a.get('href').split(sep='/')[3])
 
         # Requete sur la page du livre et initialisation de la Soup
         livre_req = requests.get(lien_livre.strip())
@@ -68,6 +74,13 @@ for cat in categories:
         prix_TTC = livre_soup.select('td')[3].text.strip()
         nb_star = livre_soup.select('p')[2].get('class')
         rating = nb_star[1] + " stars"
+
+        # Enregistrement de l'image du livre
+        image_data = requests.get(url_image).content
+        titre_clean = titre.translate({ord(c): "" for c in "!@#$%^&*()[]\{\};:,./<>?\\|`~-=_+\"\'"})
+        img_name = img_dir + '/' + titre_clean.replace(" ","_") + '.jpg'
+        with open(img_name, 'wb') as img:
+            img.write(image_data)
 
         # Stockage des informations dans un dictionnaire
         all_info.append({
@@ -87,7 +100,7 @@ for cat in categories:
     while nb_livre % 20 == 0:
         lien_new = base_url + categorie_script + '_' + str(cpt) + '/page-' + str(num_page) + '.html'
         new_requete_categorie = requests.get(lien_new.strip())
-        #print(new_requete_categorie.status_code)
+
         if new_requete_categorie.status_code == 200 :
             contenue_categorie_suite = BeautifulSoup(new_requete_categorie.content, 'html.parser')
             all_books_new = contenue_categorie_suite.find_all('li', class_='col-xs-6 col-sm-4 col-md-3 col-lg-3')
@@ -95,7 +108,6 @@ for cat in categories:
             # Parcours des livres des différentes pages
             for x in all_books_new:
                 lien_livre = 'http://books.toscrape.com/catalogue/' + x.h3.a.get('href').split(sep='/')[3] + '/' + x.h3.a.get('href').split(sep='/')[4]
-                #print(x.h3.a.get('href').split(sep='/')[3])
 
                 # Requete sur la page du livre et initialisation de la Soup
                 livre_req = requests.get(lien_livre.strip())
@@ -113,6 +125,13 @@ for cat in categories:
                 prix_TTC = livre_soup.select('td')[3].text.strip()
                 nb_star = livre_soup.select('p')[2].get('class')
                 rating = nb_star[1] + " stars"
+
+                # Enregistrement de l'image du livre
+                image_data = requests.get(url_image).content
+                titre_clean = titre.translate({ord(c): "" for c in "!@#$%^&*()[]\{\};:,./<>?\\|`~-=_+\"\'"})
+                img_name = img_dir + '/' + titre_clean.replace(" ","_") + '.jpg'
+                with open(img_name, 'wb') as img:
+                    img.write(image_data)
 
                 # Stockage des informations dans un dictionnaire
                 all_info.append({
@@ -133,7 +152,6 @@ for cat in categories:
             # Incrémentation du numéro de la page du livre
             num_page = num_page + 1
         else:
-            print(lien_new)
             break
     
     # Stockage des clés du dictionnaire
