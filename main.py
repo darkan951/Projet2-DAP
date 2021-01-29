@@ -77,7 +77,7 @@ for cat in categories:
 
         # Enregistrement de l'image du livre
         image_data = requests.get(url_image).content
-        titre_clean = titre.translate({ord(c): "" for c in "!@#$%^&*()[]\{\};:,./<>?\\|`~-=_+\"\'"})
+        titre_clean = titre.translate({ord(c): "" for c in "!@#$%^&*()[]{\r};:,./<>?\\|`~-=_+\"\'"})
         img_name = img_dir + '/' + titre_clean.replace(" ","_") + '.jpg'
         with open(img_name, 'wb') as img:
             img.write(image_data)
@@ -128,7 +128,7 @@ for cat in categories:
 
                 # Enregistrement de l'image du livre
                 image_data = requests.get(url_image).content
-                titre_clean = titre.translate({ord(c): "" for c in "!@#$%^&*()[]\{\};:,./<>?\\|`~-=_+\"\'"})
+                titre_clean = titre.translate({ord(c): "" for c in "!@#$%^&*()[]{\r};:,./<>?\\|`~-=_+\"\'"})
                 img_name = img_dir + '/' + titre_clean.replace(" ","_") + '.jpg'
                 with open(img_name, 'wb') as img:
                     img.write(image_data)
