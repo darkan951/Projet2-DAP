@@ -1,8 +1,8 @@
 ####################################################################
 # Description : programme permettant de scraper un site de vente   #
 #               de livre d'occasion                                #
-# Date : ??/??/2021                                                #
-# Version : 0.1                                                    #
+# Date : 29/01/2021                                                #
+# Version : 1.0                                                    #
 # Rédacteur : Franck HEBERT                                        #
 ####################################################################
 
@@ -15,8 +15,8 @@ import csv
 import os
 
 # Initialisation de l'adresse initiale où attaquer le site web
-base_url = "http://books.toscrape.com/catalogue/category/books/"
-fin_url = "/index.html"
+base_url = 'http://books.toscrape.com/catalogue/category/books/'
+fin_url = '/index.html'
 
 if os.path.exists('./CSV') == False :
     os.mkdir('./CSV')
@@ -49,7 +49,7 @@ for cat in categories:
     # Parcours des livres de la premiere page
     for x in all_books:
         # Initialisation de l'adresse des livres
-        lien_livre = "http://books.toscrape.com/catalogue/" + x.h3.a.get('href').split(sep='/')[3] + '/' + x.h3.a.get('href').split(sep='/')[4]
+        lien_livre = 'http://books.toscrape.com/catalogue/' + x.h3.a.get('href').split(sep='/')[3] + '/' + x.h3.a.get('href').split(sep='/')[4]
         #print(x.h3.a.get('href').split(sep='/')[3])
 
         # Requete sur la page du livre et initialisation de la Soup
@@ -94,7 +94,7 @@ for cat in categories:
 
             # Parcours des livres des différentes pages
             for x in all_books_new:
-                lien_livre = "http://books.toscrape.com/catalogue/" + x.h3.a.get('href').split(sep='/')[3] + '/' + x.h3.a.get('href').split(sep='/')[4]
+                lien_livre = 'http://books.toscrape.com/catalogue/' + x.h3.a.get('href').split(sep='/')[3] + '/' + x.h3.a.get('href').split(sep='/')[4]
                 #print(x.h3.a.get('href').split(sep='/')[3])
 
                 # Requete sur la page du livre et initialisation de la Soup
