@@ -18,9 +18,10 @@ import os
 base_url = 'http://books.toscrape.com/catalogue/category/books/'
 fin_url = '/index.html'
 
+
+# Création de l'arborescence de fichier pour stocket les images et les csv
 if os.path.exists('./CSV') == False :
     os.mkdir('./CSV')
-
 if os.path.exists('./Images') == False :
     os.mkdir('./Images')
 
@@ -36,6 +37,7 @@ for cat in categories:
     # initialisation du dictionnaire pour remplir le CSV
     all_info = []
 
+    # Création de la sous arborescence du dossier image pour les ranger par catégories
     img_dir = './Images/' + cat.text.strip().replace(' ', '_')
     if os.path.exists(img_dir) == False :
         os.mkdir(img_dir)
@@ -158,7 +160,6 @@ for cat in categories:
     keys = all_info[0].keys()
 
     # Création du CSV avec les clés du dictionnaire comme nom de colonne
-    
     with open('./CSV/liste_livre_' + cat.text.strip() + '.csv', 'w', newline='', encoding="utf-8") as output_file:
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
